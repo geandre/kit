@@ -10,6 +10,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 if /i "%1"=="-h" goto printhelp
 if /i "%1"=="-v" goto printlogo
+if /i "%1"=="" goto printlogo
 if /i "%1"=="config" goto kitconfig
 
 :: End with success
@@ -41,6 +42,7 @@ if /i "%1"=="config" goto kitconfig
     echo ##  ##  ######    ##  
     echo.
     echo v0.1.0
+    goto endsuccess
 
 :: Comando config
 :kitconfig
