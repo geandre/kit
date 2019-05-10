@@ -62,6 +62,10 @@ if /i "%1"=="config" goto kitconfig
     rmdir c:\wd /s /q >nul
     mkdir c:\wd >nul
     chdir c:\wd >nul
+    git config --global --unset-all user.name  >nul
+    git config --global --unset-all user.email  >nul
+    git config --global --add user.name "%name%"  >nul
+    git config --global --add user.email "%email%"  >nul
     git clone %repo% %dirname%
     chdir c:\wd\%dirname% >nul
     git branch
