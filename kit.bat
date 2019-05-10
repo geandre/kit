@@ -12,6 +12,7 @@ if /i "%1"=="-h" goto printhelp
 if /i "%1"=="-v" goto printlogo
 if /i "%1"=="" goto printlogo
 if /i "%1"=="config" goto kitconfig
+if /i "%1"=="salvar" goto kitsalvar
 
 :: End with success
 :endsuccess
@@ -69,3 +70,10 @@ if /i "%1"=="config" goto kitconfig
     git clone %repo% %dirname%
     chdir c:\wd\%dirname% >nul
     git branch
+    goto endsuccess;
+
+:: Comando salvar
+:kitsalvar
+    git add *
+    git commit -m "%DATE% %TIME%"
+    goto endsuccess;
