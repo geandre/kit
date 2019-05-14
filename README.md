@@ -1,5 +1,7 @@
 # Kit
 
+[Download](https://github.com/geandre/kit/raw/master/Kit.exe)
+
 ### Comandos basicos]
 
 * ```kit -v``` Exibe a versao do Kit.
