@@ -11,8 +11,10 @@ if %ERRORLEVEL% NEQ 0 (
 if /i "%1"=="-h" goto printhelp
 if /i "%1"=="-v" goto printlogo
 if /i "%1"=="" goto printlogo
-if /i "%1"=="config" goto kitconfig
-if /i "%1"=="salvar" goto kitsalvar
+if /i "%1"=="configure" goto kitconfig
+if /i "%1"=="salve" goto kitsalvar
+if /i "%1"=="publique" goto kitpublicar
+if /i "%1"=="limpe" goto kitlimpar
 
 :: End with success
 :endsuccess
@@ -29,9 +31,13 @@ if /i "%1"=="salvar" goto kitsalvar
 :printhelp
     echo Ajuda do kit
     echo Comandos basicos
-    echo    kit -v                 Exibe a versao do Kit
-    echo    kit -h                 Exibe a ajuda do Kit
-    echo    kit config             Configura o GIT para gerenciar o seu projeto
+    echo    kit -v                 Exibe a versao do Kit.
+    echo    kit -h                 Exibe a ajuda do Kit.
+    echo    kit configure          Configura o GIT para gerenciar o seu projeto.
+    echo    kit salve              Salva as mudancas do codigo no github.
+    echo    kit publique           Publica as mudancas no github pages.
+    echo    kit limpe              Remove a pasta do computador mas nao altera o repositorio no github.
+    echo    kit limpe /s           Igual ao limpe mas nao pergunta nada.
     goto endsuccess
 
 :: Print logo
@@ -42,7 +48,7 @@ if /i "%1"=="salvar" goto kitsalvar
     echo ## ##     ##      ##  
     echo ##  ##  ######    ##  
     echo.
-    echo v0.1.0
+    echo v1.0
     goto endsuccess
 
 :: Comando config
@@ -63,17 +69,48 @@ if /i "%1"=="salvar" goto kitsalvar
     rmdir c:\wd /s /q >nul
     mkdir c:\wd >nul
     chdir c:\wd >nul
-    git config --global --unset-all user.name  >nul
-    git config --global --unset-all user.email  >nul
-    git config --global --add user.name "%name%"  >nul
-    git config --global --add user.email "%email%"  >nul
+    if "%name%" NEQ "" git config --global --unset-all user.name  >nul
+    if "%name%" NEQ "" git config --global --add user.name "%name%"  >nul
+    if "%email%" NEQ "" git config --global --unset-all user.email  >nul
+    if "%email%" NEQ "" git config --global --add user.email "%email%"  >nul
     git clone %repo% %dirname%
     chdir c:\wd\%dirname% >nul
     git branch
     goto endsuccess;
 
-:: Comando salvar
+:: Comando salve
 :kitsalvar
     git add *
     git commit -m "%DATE% %TIME%"
+    git push origin master
+    goto endsuccess;
+
+:: Comando publique
+:kitpublicar
+    git branch -D gh-pages
+    git branch gh-pages
+    git checkout gh-pages
+    git push origin gh-pages
+    git checkout master
+    goto endsuccess;
+
+:: Comando limpe
+:kitlimpar
+    if /i "%2" NEQ "/s" (
+        echo Atencao! Esse comando vai apagar todo o conteudo da pasta e as altercoes que nao estiverem
+        echo salvas serao perdidas. Tenha certeza de encerrar todos os aplicativos que usam essa pasta
+        echo antes de executar a limpeza.
+        echo Tem certeza que deseja prosseguir? [s/N]
+        set /p sure=:
+    ) else (
+        set sure=s
+    )
+    if /i "%sure%" EQU "s" (
+        echo Removendo o conteudo do computador...
+        chdir c:\ >nul
+        rmdir c:\wd /s /q
+        echo Limpeza concluida!
+    ) else (
+        echo Limpeza cancelada!
+    )
     goto endsuccess;
