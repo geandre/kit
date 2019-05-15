@@ -65,14 +65,24 @@ if /i "%1"=="limpe" goto kitlimpar
     echo Digite o nome da pasta ex: site-1
     set /p dirname=:
     echo.
-    echo Preparando o ambiente
+    echo Digite o seu nome de usuário do Github
+    set /p username=:
+    echo.
+    echo Digite a sua senha do Github
+    set /p password=:
+    echo.
+    echo Preparando o ambiente...
     rmdir c:\wd /s /q >nul
     mkdir c:\wd >nul
     chdir c:\wd >nul
+    echo Configurando o GIT...
     if "%name%" NEQ "" git config --global --unset-all user.name  >nul
     if "%name%" NEQ "" git config --global --add user.name "%name%"  >nul
     if "%email%" NEQ "" git config --global --unset-all user.email  >nul
     if "%email%" NEQ "" git config --global --add user.email "%email%"  >nul
+    if "%username%" NEQ "" (
+        if "%password%" NEQ "" cmdkey /generic:git:https://github.com /user:%username% /pass:%password%
+    )
     git clone %repo% %dirname%
     chdir c:\wd\%dirname% >nul
     git branch
